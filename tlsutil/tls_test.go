@@ -127,12 +127,12 @@ func TestNodeIDFromConn(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer clientConn.CloseWithError(0, "")
+	defer func() { _ = clientConn.CloseWithError(0, "") }()
 
 	if err := <-errCh; err != nil {
 		t.Fatal(err)
 	}
-	defer serverConn.CloseWithError(0, "")
+	defer func() { _ = serverConn.CloseWithError(0, "") }()
 
 	// Verify NodeIDFromConn
 	nodeID, err := NodeIDFromConn(serverConn)

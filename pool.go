@@ -139,7 +139,7 @@ func (p *ConnPool) CloseConnection(addr string) {
 	entry := val.(*poolEntry)
 	entry.mu.Lock()
 	if entry.conn != nil {
-		entry.conn.CloseWithError(0, "connection closed")
+		_ = entry.conn.CloseWithError(0, "connection closed")
 	}
 	entry.mu.Unlock()
 }
@@ -202,7 +202,7 @@ func (p *ConnPool) sweep() {
 			return true
 		}
 		if p.maxAge > 0 && now.Sub(entry.createdAt) > p.maxAge {
-			entry.conn.CloseWithError(0, "max connection age exceeded")
+			_ = entry.conn.CloseWithError(0, "max connection age exceeded")
 			entry.mu.Unlock()
 			p.entries.Delete(key)
 			return true
@@ -233,7 +233,7 @@ func (p *ConnPool) close() {
 		entry := value.(*poolEntry)
 		entry.mu.Lock()
 		if entry.conn != nil {
-			entry.conn.CloseWithError(0, "transport shutdown")
+			_ = entry.conn.CloseWithError(0, "transport shutdown")
 		}
 		entry.mu.Unlock()
 		p.entries.Delete(key)

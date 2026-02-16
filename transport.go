@@ -196,7 +196,7 @@ func (t *Transport) DialAddressTimeout(addr memberlist.Address, timeout time.Dur
 	}
 
 	if timeout > 0 {
-		sc.SetDeadline(time.Now().Add(timeout))
+		_ = sc.SetDeadline(time.Now().Add(timeout))
 	}
 
 	return sc, nil

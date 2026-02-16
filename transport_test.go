@@ -35,7 +35,7 @@ func createTestTransport(t *testing.T, caCert, caKey []byte, nodeName string) (*
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { transport.Shutdown() })
+	t.Cleanup(func() { _ = transport.Shutdown() })
 
 	mlConfig := memberlist.DefaultLANConfig()
 	mlConfig.Name = nodeName
@@ -72,13 +72,13 @@ func TestTwoNodeCluster(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml1.Shutdown()
+	defer func() { _ = ml1.Shutdown() }()
 
 	ml2, err := memberlist.Create(cfg2)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml2.Shutdown()
+	defer func() { _ = ml2.Shutdown() }()
 
 	n, err := ml2.Join([]string{advertiseAddr(t, ml1)})
 	if err != nil {
@@ -119,19 +119,19 @@ func TestThreeNodeCluster(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml1.Shutdown()
+	defer func() { _ = ml1.Shutdown() }()
 
 	ml2, err := memberlist.Create(cfg2)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml2.Shutdown()
+	defer func() { _ = ml2.Shutdown() }()
 
 	ml3, err := memberlist.Create(cfg3)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml3.Shutdown()
+	defer func() { _ = ml3.Shutdown() }()
 
 	// Join node-2 and node-3 to node-1
 	if _, err := ml2.Join([]string{advertiseAddr(t, ml1)}); err != nil {
@@ -170,7 +170,7 @@ func TestLeaveDetection(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml1.Shutdown()
+	defer func() { _ = ml1.Shutdown() }()
 
 	ml2, err := memberlist.Create(cfg2)
 	if err != nil {
@@ -194,7 +194,7 @@ func TestLeaveDetection(t *testing.T) {
 	if err := ml2.Leave(5 * time.Second); err != nil {
 		t.Fatalf("leave failed: %v", err)
 	}
-	ml2.Shutdown()
+	_ = ml2.Shutdown()
 
 	// Wait for node-1 to detect leave
 	deadline = time.Now().Add(10 * time.Second)
@@ -222,13 +222,13 @@ func TestConnPoolSharing(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml1.Shutdown()
+	defer func() { _ = ml1.Shutdown() }()
 
 	ml2, err := memberlist.Create(cfg2)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer ml2.Shutdown()
+	defer func() { _ = ml2.Shutdown() }()
 
 	if _, err := ml2.Join([]string{advertiseAddr(t, ml1)}); err != nil {
 		t.Fatalf("join failed: %v", err)
