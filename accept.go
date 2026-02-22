@@ -24,7 +24,7 @@ func (t *Transport) acceptLoop() {
 				continue
 			}
 		}
-		t.pool.addInbound(conn)
+		t.pool.AddInbound(conn)
 		t.startConnHandlers(conn)
 	}
 }

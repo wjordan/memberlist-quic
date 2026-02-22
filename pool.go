@@ -173,7 +173,8 @@ func (p *ConnPool) Len() int {
 	return count
 }
 
-func (p *ConnPool) addInbound(conn *quic.Conn) {
+// AddInbound registers an inbound (or externally established) connection in the pool.
+func (p *ConnPool) AddInbound(conn *quic.Conn) {
 	addr := conn.RemoteAddr().String()
 	entry := &poolEntry{}
 	entry.setConn(conn)

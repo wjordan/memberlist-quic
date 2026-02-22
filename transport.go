@@ -224,6 +224,13 @@ func (t *Transport) ConnPool() *ConnPool {
 	return t.pool
 }
 
+// RawTransport returns the underlying QUIC transport. This is needed for
+// hole punching — outgoing dials must originate from the same UDP socket
+// as the listener so the NAT mapping is preserved.
+func (t *Transport) RawTransport() *quic.Transport {
+	return t.transport
+}
+
 // startConnHandlers starts the receive goroutines for a newly dialed
 // outbound connection. This is also called for inbound connections via acceptLoop.
 func (t *Transport) startConnHandlers(conn *quic.Conn) {
